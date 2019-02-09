@@ -10,8 +10,6 @@ UGrabber::UGrabber()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
 
@@ -19,9 +17,27 @@ UGrabber::UGrabber()
 void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
+	UGrabber::FindPhysicsHandleComponent();
+	UGrabber::SetupInputComponent();
+}
 
-	UE_LOG(LogTemp, Warning, TEXT("Grabber reporting for duty!"));
 
+// Called every frame
+void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+
+	// if the physics handle is attached
+		// move the object that we're holding
+
+}
+
+/**
+ * Middleware starts here
+ */
+void UGrabber::FindPhysicsHandleComponent()
+{
 	// Look for attached Physics Handle
 	PhysicsHandle = GetOwner() -> FindComponentByClass<UPhysicsHandleComponent>();
 	if (PhysicsHandle)
@@ -33,6 +49,29 @@ void UGrabber::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("%s missing physics handle component"), *(GetOwner()->GetName()));
 	}
 
+}
+
+void UGrabber::Grab()
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s is grabbing"), *(GetOwner()->GetName()));
+
+	/// Line trace and see if we reach any actors with physics body collision channel set
+	UGrabber::GetFirstPhysicsBodyInReach();
+
+	/// If we hit something then attach a physics handle
+	// TODO attach physics handle
+}
+
+// :: means we already know at compile time
+void UGrabber::Release()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Grab released"));
+	// TODO release physics handle
+
+}
+
+void UGrabber::SetupInputComponent()
+{
 	// Look for attached Input Component
 	InputComponent = GetOwner() -> FindComponentByClass<UInputComponent>();
 	if (InputComponent)
@@ -47,45 +86,22 @@ void UGrabber::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s missing input component"), *(GetOwner()->GetName()));
 	}
-
 }
 
-
-// Called every frame
-void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
 	// Get player view point this tick
 	FVector PlayerViewPointLocation;
 	FRotator PlayerViewPointRotation;
-
 	GetWorld() -> GetFirstPlayerController() -> GetPlayerViewPoint(
-				// annotating OUT
-				OUT PlayerViewPointLocation,
-				OUT PlayerViewPointRotation
-			);
+			// annotating OUT
+			OUT PlayerViewPointLocation,
+			OUT PlayerViewPointRotation
+	);
 
-	// Log out to test
-//	UE_LOG(LogTemp, Warning, TEXT("Locations: %s, Position: %s"),
-//                *PlayerViewPointLocation.ToString(),
-//                *PlayerViewPointRotation.ToString()
-//	        );
 
-	/// straight out line
+	// straight out line
 	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
-
-	// Draw a red trace in the world to visualize
-	DrawDebugLine(
-	        GetWorld(),
-	        PlayerViewPointLocation,
-	        LineTraceEnd,
-	        FColor(255, 0, 0),
-	        false,
-	        0.f,
-	        0.f,
-	        10.f
-        );
 
 	// Setup query parameters
 	FCollisionQueryParams TraceParams(FName(TEXT("")), false, GetOwner());
@@ -93,34 +109,21 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	// Line-trace (AKA ray-cast) out to reach distance
 	FHitResult Hit;
 	GetWorld() -> LineTraceSingleByObjectType(
-				OUT Hit,
-				PlayerViewPointLocation,
-				LineTraceEnd,
-				FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
-				TraceParams
-			);
+			OUT Hit,
+			PlayerViewPointLocation,
+			LineTraceEnd,
+			FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
+			TraceParams
+	);
 
 	// See what we hit
-	// Pointer
 	AActor* ActorHit = Hit.GetActor();
 	if (ActorHit)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Line trace hit: %s"), *(ActorHit->GetName()))
 	}
 
-}
-
-// middleware here
-void UGrabber::Grab()
-{
-	UE_LOG(LogTemp, Warning, TEXT("%s is grabbing"), *(GetOwner()->GetName()));
-}
-
-// :: means we already know at compile time
-void UGrabber::Release()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Grab released"));
-
+	return Hit;
 }
 
 
