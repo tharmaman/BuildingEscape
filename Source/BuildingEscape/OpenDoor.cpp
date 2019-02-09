@@ -1,9 +1,6 @@
 // Copyright Daniel Tharmathurai 2016
 
 #include "OpenDoor.h"
-#include "Engine/World.h"
-#include "Runtime/Engine/Classes/GameFramework/PlayerController.h"
-
 
 // Sets default values for this component's properties
 UOpenDoor::UOpenDoor()
