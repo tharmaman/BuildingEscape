@@ -8,6 +8,7 @@
 #include "Runtime/Engine/Classes/GameFramework/PlayerController.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Grabber.generated.h"
 
 
@@ -29,5 +30,8 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
+	// how far ahead of the player can we reach in cm
 	float Reach = 100.f;
+
+	UPhysicsHandleComponent* PhysicsHandle{nullptr};
 };
