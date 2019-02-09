@@ -52,7 +52,7 @@ void UOpenDoor::OpenDoor(){
 
 void UOpenDoor::CloseDoor(){
 	// set the door rotation
-	Owner->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
+	Owner->SetActorRotation(FRotator(0.0f, ClosedAngle, 0.0f));
 }
 
 
