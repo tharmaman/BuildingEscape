@@ -9,6 +9,7 @@
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "Runtime/Engine/Classes/Components/InputComponent.h"
 #include "Grabber.generated.h"
 
 
@@ -31,7 +32,15 @@ public:
 
 private:
 	// how far ahead of the player can we reach in cm
-	float Reach = 100.f;
+	float Reach{100.f};
 
 	UPhysicsHandleComponent* PhysicsHandle{nullptr};
+
+	UInputComponent* InputComponent{nullptr};
+
+	// Ray-cast and grab what's in reach
+	void Grab();
+
+	// Called when grab is released
+	void Release();
 };
