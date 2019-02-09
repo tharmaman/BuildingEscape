@@ -39,7 +39,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 	// straight out line
 	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
-	
+
 	// if the physics handle is attached
 	if (PhysicsHandle && PhysicsHandle -> GrabbedComponent)
 	{
