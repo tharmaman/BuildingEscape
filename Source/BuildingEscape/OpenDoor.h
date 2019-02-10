@@ -8,6 +8,7 @@
 #include "Engine/TriggerVolume.h"
 #include "Engine/World.h"
 #include "Runtime/Engine/Classes/GameFramework/PlayerController.h"
+#include "Runtime/Engine/Classes/Components/PrimitiveComponent.h"
 #include "OpenDoor.generated.h"
 
 
@@ -38,9 +39,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	ATriggerVolume* PressurePlate;
 
-//	UPROPERTY(EditAnywhere)
-	AActor* ActorThatOpens; // remember pawn inherits from actor
-
 	AActor* Owner;	// owner of door
 
 	UPROPERTY(EditAnywhere)
@@ -51,4 +49,7 @@ private:
 	// middleware
 	void OpenDoor();
 	void CloseDoor();
+
+	// Returns total mass in kilograms
+	float GetTotalMassOfActorsOnPlate();
 };
