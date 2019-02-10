@@ -60,7 +60,7 @@ void UGrabber::Grab()
 	auto ActorHit = HitResult.GetActor();
 
 	/// If we hit something then attach a physics handle
-	if (ActorHit != nullptr)
+	if (ActorHit && PhysicsHandle)
 	{
 		PhysicsHandle->GrabComponentAtLocation(
 					ComponentToGrab,
@@ -73,10 +73,10 @@ void UGrabber::Grab()
 // :: means we already know at compile time
 void UGrabber::Release()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Grab released"));
-	// TODO release physics handle
-	PhysicsHandle->ReleaseComponent();
-
+	if(PhysicsHandle){
+		UE_LOG(LogTemp, Warning, TEXT("Grab released"));
+		PhysicsHandle->ReleaseComponent();
+	}
 }
 
 /// Look for attached Input Component (only appears at run time)
